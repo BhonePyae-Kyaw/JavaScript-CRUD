@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="index.css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>CRUD testing</title>
+    <style>
+        body{
+            margin: 0;
+            background-color: rgba(47, 52, 62, 0.53);
+            padding: 10px;
+        }
+        #updateTable{
+            display: none;
+            background-color: aqua;
+            width: fit-content;
+            padding: 20px;
+        }
+        #createTable{
+            background-color: rgba(32, 35, 41, 0.53);
+            width: fit-content;
+            padding: 20px;
+        }
+        #contentDiv{
+            display: grid;
+            grid-template-columns: auto auto auto;
+        }
+        #contentCard{
+            width: 300px;
+            height: auto;
+            padding: 20px;
+            margin-bottom: 10px;
+            background-color: rgb(203, 224, 224);
+        }
+    </style>
+</head>
+<body>
+    <div id="updateTable">
+        <form>
+            <caption>Update Table</caption>
+            <br/>
+            <label>Name: </label>
+            <input type="text" id="nameEdit" />
+            <br/>
+            <label>ID: </label>
+            <input type="text" id="idEdit" />
+            <br/>
+            <label>Score: </label>
+            <input type="number" id="scoreEdit">
+            <input type="hidden" id="updateKey"/>
+        </form>
+        <button onclick="updateForm()">Update</button>
+    </div>
+    <div id="createTable">
+        <form>
+            <caption>Create Table</caption>
+            <br />
+            <label>Name: </label>
+            <input type="text" id="name" />
+            <br/>
+            <label>ID: </label>
+            <input type="text" id="id" />
+            <br/>
+            <label>Score: </label>
+            <input type="number" id="score">
+        </form>
+        <button onclick="submitForm()">Submit</button>
+    </div>
+    <div>
+        <h1>Content Lists: </h1>
+        <div id="contentDiv"></div>
+    </div>
+</body>
+<script>
+    var arr = []
+    
+    function submitForm() {
+        const name = document.getElementById('name').value
+        const id = document.getElementById('id').value
+        const score = document.getElementById('score').value
+        arr.push({
+            name : name,
+            id : id,
+            score: score
+        })
+        console.log(arr);
+        addContent(arr);
+    }
+
+    function addContent(arr) {
+        let divs = "";
+        const contentDiv = document.getElementById('contentDiv')
+        for (let i in arr) {
+            const contentAdded = arr[i];
+            divs = divs +
+                `<div id="contentCard">
+                    <p>name : ${contentAdded.name}</p>
+                    <p>id: ${contentAdded.id}</p>
+                    <p>score: ${contentAdded.score}</p>
+                    <button onClick="editContent(${i})">Edit</button>
+                    <button onclick="deleteContent(${i})">Delete</button>
+                </div>`;
+        }
+        contentDiv.innerHTML = divs;
+    }
+
+    function deleteContent(i){
+        arr.splice(i, 1)
+        addContent(arr);
+    }
+
+    function editContent(i){
+        document.getElementById('createTable').style.display = "none";
+        document.getElementById('updateTable').style.display = "block";
+        document.getElementById('nameEdit').value = arr[i].name;
+        document.getElementById('idEdit').value = arr[i].id;
+        document.getElementById('scoreEdit').value = arr[i].score;
+        document.getElementById('updateKey').value = i;
+    }
+    function updateForm(i) {
+        console.log(arr)
+        const key = document.getElementById('updateKey').value;
+        arr[key].name = document.getElementById('nameEdit').value;
+        arr[key].id = document.getElementById('idEdit').value;
+        arr[key].score = document.getElementById('scoreEdit').value
+        addContent(arr);
+        resetEdit();
+        document.getElementById('createTable').style.display = "block";
+        document.getElementById('updateTable').style.display = "none";
+    }
+    function resetEdit() {
+        document.getElementById('nameEdit').value = "";
+        document.getElementById('idEdit').value = "";
+        document.getElementById('scoreEdit').value = "";
+    }
+</script>
+</html>
